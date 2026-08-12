@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eaf0fb">
+  <title>Monthly Receipt</title>
+  <!-- ?v=N below is a manual cache-bust — bump it when you edit style.css/
+       questions.js/stickers.js/app.js and a reload isn't showing the change.
+       (Local dev also runs serve.py, which sends Cache-Control: no-store,
+       but bumping this covers browsers/hosts that ignore that too.) -->
+  <link rel="stylesheet" href="style.css?v=132">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-in">
+      <button class="topbar-back hidden" id="btnHeaderBack" type="button" aria-label="Back">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="mark" id="home" type="button">Monthly&nbsp;Receipt</button>
+      <div class="topbar-end"></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- ========== HOME ========== -->
+    <section id="viewHome">
+      <div class="hero">
+        <div class="hero-slot">
+          <!-- two real receipts, overlapped, standing in for the old
+               animated mock-up — shows what you actually end up with -->
+          <img class="hero-photo hero-photo-a" src="assets/hero-sample-1.png" alt="A decorated monthly receipt, covered in stickers.">
+          <img class="hero-photo hero-photo-b" src="assets/hero-sample-2.png" alt="">
+        </div>
+        <div class="hero-copy">
+          <h1 class="hero-h1">
+            <span class="hero-h1-caps">
+              <span>REFLECTIVE MONTHLY</span>
+    
+            </span>
+            <em>Receipt</em>
+          </h1>
+          <p class="lede hero-lede">
+            A few questions about your month<br>Decorate with stickers to reflect
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary hero-cta" id="btnStart">Let's go</button>
+          <!-- defaults to the current month; only here, where picking one is
+               an actual decision rather than permanent header chrome. This
+               line is the only "which month / how far along" indicator now —
+               the old separate progress hint said much the same thing twice. -->
+          <label class="month-pick">
+            <span class="month-pick-label">Month of</span>
+            <select id="monthPick" aria-label="Which month this receipt is for"></select>
+          </label>
+        </div>
+
+        <a class="hero-credit" href="https://www.instagram.com/catherinee.md" target="_blank" rel="noopener">made by catherinee.md</a>
+      </div>
+    </section>
+
+    <!-- ========== FORM ========== -->
+    <section id="viewForm" class="hidden">
+      <!-- one sheet of paper on the grid — the questions live on it -->
+      <div class="sheet">
+        <div class="sheet-perf" aria-hidden="true"></div>
+
+        <h1>Your month, itemised.</h1>
+
+        <!-- previews the receipt's own header block: the month it's for,
+             then who it's from. Editing here edits the receipt. -->
+        <div class="sheet-meta">
+          <div class="meta-month" id="formMonth"></div>
+          <div class="meta-id">
+            <input id="idName" class="id-input" type="text" maxlength="22"
+                   placeholder="your name" aria-label="Your name" autocomplete="name">
+            <input id="idHandle" class="id-input" type="text" maxlength="22"
+                   placeholder="@handle" aria-label="Your handle" autocomplete="username">
+          </div>
+        </div>
+
+        <p class="lede"> <span id="maxlenNote" class="lede-note"></span></p>
+
+        <div class="progress">
+          <div class="meter" id="meter"></div>
+          <div class="meter-label" id="meterLabel">0 of 10 lines</div>
+        </div>
+
+        <div class="qlist" id="qlist"></div>
+
+        <p class="hint"></p>
+      </div>
+    </section>
+
+    <!-- ========== LOADING (brief, between form and receipt) ========== -->
+    <section id="viewLoading" class="hidden">
+      <div class="loading-wrap">
+        <!-- same little receipt as the home screen, mid-print -->
+        <div class="mini" id="loadingReceipt" aria-hidden="true">
+          <div class="mini-title">MONTHLY RECEIPT</div>
+          <div class="mini-rule"></div>
+          <div class="mini-photo" id="loadingPhoto" hidden></div>
+          <div class="mini-line"><i style="width:44%"></i><b style="width:26%"></b></div>
+          <div class="mini-line"><i style="width:38%"></i><b style="width:34%"></b></div>
+          <div class="mini-line"><i style="width:48%"></i><b style="width:18%"></b></div>
+          <div class="mini-rule"></div>
+          <div class="mini-line total"><i style="width:30%"></i><b style="width:36%"></b></div>
+          <div class="mini-bars"></div>
+        </div>
+        <p class="loading-note">Printing…</p>
+      </div>
+    </section>
+
+    <!-- ========== RECEIPT + DECORATE ========== -->
+    <section id="viewReceipt" class="hidden">
+      <div class="stage-scroll">
+        <div id="stage"><div class="receipt" id="receipt"></div></div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="dock hidden" id="dockForm">
+    <div class="dock-in">
+      <button class="btn btn-primary" id="btnGenerate">Print receipt</button>
+    </div>
+  </div>
+
+  <div class="dock hidden" id="dockReceipt" style="bottom:62px">
+    <div class="dock-in">
+      <button class="btn btn-ghost" id="btnBack">Edit answers</button>
+      <button class="btn btn-primary" id="btnSave">Save image</button>
+    </div>
+  </div>
+
+  <div class="tray hidden" id="tray">
+    <div class="tray-head">
+      <button class="tray-grip" id="trayGrip" aria-expanded="false">Stickers</button>
+      <button class="tray-reset" id="btnResetStickers" type="button">Reset</button>
+    </div>
+    <div class="tray-scroll" id="trayScroll"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- data first, then the app that reads it -->
+  <script src="questions.js?v=132"></script>
+  <script src="stickers.js?v=132"></script>
+  <script src="app.js?v=132"></script>
+</body>
+</html>

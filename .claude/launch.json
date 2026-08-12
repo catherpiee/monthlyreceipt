@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "monthly-receipt",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "cd '/Users/albert/Downloads/MONTHLY RECEIPT/monthlyreceipt' && python3 serve.py 8791"],
+      "port": 8791
+    }
+  ]
+}
